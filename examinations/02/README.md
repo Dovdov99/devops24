@@ -112,9 +112,13 @@ incompatibilities.
 
 What happens if you run `ansible-inventory --list` in the directory you created above?
 
+Svar: När jag kör ansible-inventory --list i den katalogen visas inventoryt i JSON-format med grupperna db och web och deras tillhörande värdar samt tilldelade variabler.
+
 ## QUESTION B
 
 What happens if you run `ansible-inventory --graph` in the directory you created above?
+
+Svar: När jag kör ansible-inventory --graph i den katalogen visas en enkel textlista över inventoryt med grupper och deras värdar, till exempel all, db och web med tillhörande värdar under varje grupp.
 
 ## QUESTION C
 
@@ -131,6 +135,8 @@ Now run:
 Study the output of this command.
 
 What does the `ansible_connection=local` part mean?
+
+Svar: ansible_connection=local betyder att Ansible kör kommandon direkt på den lokala maskinen istället för att ansluta via SSH eller någon annan fjärrmetod. Det används för att köra uppgifter på den maskin där Ansible-kommandot körs.
 
 ## BONUS QUESTION
 
@@ -152,4 +158,22 @@ In your Ansible working directory where the `ansible.cfg' is, run
 
 You should get a pager displaying all available configuration values. How does it differ
 from when you run the same command in your usual home directory?
+
+Svar: Skillnaden är att i arbetskatalogen där ansible.cfg finns inkluderas dina egna inställningar, medan i hemkatalogen visas bara standardkonfigurationen. Körde colordiff för att se skillnaderna på filen i ansible directoryn samt i home directoryn. Detta är resultatet.
+38c38
+< CONFIG_FILE() = None
+---
+> CONFIG_FILE() = /home/david/devops24/ansible/ansible.cfg
+67c67
+< DEFAULT_HOST_LIST(default) = ['/etc/ansible/hosts']
+---
+> DEFAULT_HOST_LIST(/home/david/devops24/ansible/ansible.cfg) = ['/home/david/devops24/ansible/hosts']
+76c76
+< DEFAULT_LOCAL_TMP(default) = /home/david/.ansible/tmp/ansible-local-47644rz6tzfr6
+---
+> DEFAULT_LOCAL_TMP(default) = /home/david/.ansible/tmp/ansible-local-47234bzh9kbww
+143c143
+< HOST_KEY_CHECKING(default) = True
+---
+> HOST_KEY_CHECKING(/home/david/devops24/ansible/ansible.cfg) = False
 
