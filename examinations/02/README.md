@@ -160,6 +160,7 @@ You should get a pager displaying all available configuration values. How does i
 from when you run the same command in your usual home directory?
 
 Svar: Skillnaden är att i arbetskatalogen där ansible.cfg finns inkluderas dina egna inställningar, medan i hemkatalogen visas bara standardkonfigurationen. Körde colordiff för att se skillnaderna på filen i ansible directoryn samt i home directoryn. Detta är resultatet.
+
 38c38
 < CONFIG_FILE() = None
 ---
