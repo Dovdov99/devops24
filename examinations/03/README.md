@@ -121,9 +121,16 @@ Run the exact same playbook again and study the output. What is the difference?
 
 What does the `ansible.builtin.debug` module actually do?
 
+Svar: Felsökningsmodulen används ofta för att skriva ut variabla värden och meddelanden, vilket hjälper till att identifiera och lösa problem effektivt.
+
 ## QUESTION B
 
 What is the variable 'ansible_facts' and where does it come from?
+
+Svar: Är en speciell variabel som lagrar data automatiskt hos våra hostar. I detta fall så använde vi oss av "ansible_facts.nodename" vilket jag gissar skriver ut vad våra hostar har för namn. Jag utgår från detta eftersom utrskiften var: 
+ok: [webserver] => {
+        "ansible_facts.nodename": "webserver"
+    }
 
 ## QUESTION C
 
@@ -134,6 +141,19 @@ How do we now remove the software we installed through the playbook above? Make 
 playbook remove the exact same software we previously installed. Call the created
 playbook `03-uninstall-software.yml`.
 
+Svar: Det jag gjorde var att byta ut present mot removed och då avinstallerades de paketen jag skrivit i name under ansible.builtin.package.
+
+- name: Remove all our favorite software
+  become: True
+  hosts: all
+  tasks:
+    - name: Ensure vim, bash-completion, and qemu-guest-agent are removed
+      ansible.builtin.package:
+        name: vim,bash-completion,qemu-guest-agent
+        state: removed
+
+
+
 ## BONUS QUESTION
 
 What happens when you run `ansible-playbook` with different options?
@@ -142,6 +162,16 @@ Explain what each of these options do:
 * --verbose, -vv, -vvv, -vvvv
 * --check
 * --syntax-check
+
+Svar: 
+
+--verbose, -vv, -vvv, -vvvv är till för att ge information om vad som pågår bakom kulliserna när du kör kommandot. för varje "v" som läggs till så blir informationen mer fördjupad.
+
+--check är till för att köra kommandot men inte genomföra ändringarna utan endast simulera att ändringarna har gjorts. Används för att testa och verifiera playbook resultat utan att faktiskt göra ändringar.
+
+--syntax-check är till för att kontrollera din playbook efter syntaxfel. Gör inte heller några ändringar till dina hosts.
+
+
 
 ## Study Material & Documentation
 
