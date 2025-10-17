@@ -74,7 +74,17 @@ a number of keys and values that come from the output of the Ansible module.
 
 What does the output look like the first time you run this playbook?
 
+Svar: 
+
+changed: [192.168.121.127] => {"changed": true, "checksum": "4928f5d40694d15bf3e276596d47b8fc75544d59", "dest": "/etc/nginx/conf.d/https.conf", "gid": 0, "group": "root", "md5sum": "a3bb0c727d3e156afa3a11d78b406c83", "mode": "0644", "owner": "root", "secontext": "system_u:object_r:httpd_config_t:s0", "size": 465, "src": "/home/deploy/.ansible/tmp/ansible-tmp-1760696552.6579082-76626-178554914276195/source", "state": "file", "uid": 0}
+
+
 What does the output look like the second time you run this playbook?
+
+Svar:
+
+ok: [192.168.121.127] => {"changed": false, "checksum": "4928f5d40694d15bf3e276596d47b8fc75544d59", "dest": "/etc/nginx/conf.d/https.conf", "gid": 0, "group": "root", "mode": "0644", "owner": "root", "path": "/etc/nginx/conf.d/https.conf", "secontext": "system_u:object_r:httpd_config_t:s0", "size": 465, "state": "file", "uid": 0}
+
 
 # QUESTION B
 
@@ -101,6 +111,13 @@ On the machine itself we can do this by:
 Given what we know about the [ansible.builtin.service](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html),
 how can we do this through Ansible?
 
+Svar: Jag lägger till denna task i min playbook 05-web.yml för att starta om nginx
+
+    - name: Restart nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
 Add an extra task to the `05-web.yml` playbook to ensure the service is restarted after the configuration
 file is installed.
 
@@ -119,7 +136,11 @@ a self signed certificate.
 What is the disadvantage of having a task that _always_ makes sure a service is restarted, even if there is
 no configuration change?
 
+Svar: Jag tänker att det är en nackdel att starta om varje gång man kör en playbook då det kan störa tjänster som redan körs. Det är bättre att bara starta om vid faktiska ändringar, så man undviker störningar.  
+
 # BONUS QUESTION
 
 There are at least two _other_ modules, in addition to the `ansible.builtin.service` module that can restart
 a `systemd` service with Ansible. Which modules are they?
+
+Svar: Två andra moduler som kan starta om en systemd-tjänst är systemd och command. systemd är gjord just för systemd-tjänster och har fler inställningar, medan command bara kör kommandot, t.ex. systemctl restart nginx.

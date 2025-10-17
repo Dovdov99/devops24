@@ -1,0 +1,17 @@
+- name: Copy files
+  hosts: web
+  become: true
+  tasks:
+
+    - name: Copy local file to /etc/nginx/conf.d/https.conf
+      ansible.builtin.copy:
+        src: /home/david/devops24/ansible/files/https.conf
+        dest: /etc/nginx/conf.d/https.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Restart nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
