@@ -53,12 +53,16 @@ module.
 
 How can we make the web server start with an addition of just one line to the playbook above?
 
+Svar: Jag lägger till raden state: started under ansible.builtin.service för att starta tjänsten direkt när jag kör min playbook.
+
 # QUESTION B
 
 You make have noted that the `become: true` statement has moved from a specific task to the beginning
 of the playbook, and is on the same indentation level as `tasks:`.
 
 What does this accomplish?
+
+Svar: Att sätta become: true på samma nivå som tasks: betyder att alla tasks i playbooken kommer köras med root rättigheter istället för att behöva skriva become: true för varje enskild task.
 
 # QUESTION C
 
@@ -72,8 +76,12 @@ log in to the machine and make sure that there are no `nginx` processes running.
 
 Why did we change the order of the tasks in the `04-uninstall-webserver.yml` playbook?
 
+Svar: Anledningen till att vi ändrade ordningen på uppgifterna är att en tjänst bör stoppas och inaktiveras innan den avinstalleras. Om vi försöker avinstallera nginx medan den fortfarande körs, kan det leda till fel.
+
 # BONUS QUESTION
 
 Consider the output from the tasks above, and what we were actually doing on the machine.
 
 What is a good naming convention for tasks? (What SHOULD we write in the `name:` field`?)
+
+Svar: Jag tycker man ska hålla det kort och simpelt. Man ska kunna första vad tasken gör utan att behöva läsa igenom hela playbooken men det betyder inte heller att namnet ska va hur långt som helst.
