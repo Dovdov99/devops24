@@ -8,7 +8,7 @@
 
 
 - name: Remove all our favorite software
-  become: True
+  become: true
   hosts: all
   tasks:
     - name: Ensure vim, bash-completion, and qemu-guest-agent are removed
