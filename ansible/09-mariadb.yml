@@ -1,0 +1,49 @@
+---
+- name: Install MariaDB-server
+  hosts: db
+  become: true
+  tasks:
+    - name: Ensure MariaDB-server is installed.
+      ansible.builtin.package:
+        name: mariadb-server
+        state: present
+
+    - name: Install python3-PyMySQL
+      ansible.builtin.package:
+        name: python3-PyMySQL
+        state: present
+
+    - name: Ensure mariadb is started at boot
+      ansible.builtin.service:
+        name: mariadb
+        enabled: true
+        state: started
+
+    - name: Collect service facts
+      ansible.builtin.service_facts:
+
+    - name: Check if mariadb is running
+      ansible.builtin.debug:
+        msg: "MariaDB is running"
+      when: ansible_facts.services['mariadb.service'].state == "running"
+
+
+    - name: Create a new database with name 'webappdb'
+      community.mysql.mysql_db:
+        name: webappdb
+        state: present
+        login_unix_socket: /var/lib/mysql/mysql.sock
+
+    - name: Create database user using password with all database privileges
+      community.mysql.mysql_user:
+        name: webappuser
+        password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          34666365333664313131366337373530333334396533336263323630353434643238383135313539
+          3039306539636564336133643164303234323961666361610a303137363832376565633936313966
+          31623632613332393437363763303932313132326266636433636236636233633837613562623338
+          6661306531316430650a393463663866313161366261636562343935633035666631353934326331
+          3065
+        priv: '*.*:ALL'
+        state: present
+        login_unix_socket: /var/lib/mysql/mysql.sock
