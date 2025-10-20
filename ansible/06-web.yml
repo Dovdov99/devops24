@@ -1,0 +1,49 @@
+- name: Copy files
+  hosts: web
+  become: true
+  tasks:
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /var/www/example.internal/html/
+        state: directory
+        mode: '0755'
+        setype: _default
+
+
+    - name: Copy local file to /etc/nginx/conf.d/https.conf
+      ansible.builtin.copy:
+        src: files/https.conf
+        dest: /etc/nginx/conf.d/https.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+
+    - name: Copy local file to /etc/nginx/conf.d/index.html
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: /var/www/example.internal/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
+
+
+    - name: Ensure the nginx configuration is updated for example.internal
+      ansible.builtin.copy:
+        src: files/example.internal.conf
+        dest: /etc/nginx/conf.d/example.internal.conf
+        group: root
+        owner: root
+        mode: '0644'
+      register: result
+
+    - name: Debug tasks
+      ansible.builtin.debug:
+        var: result
+
+    - name: Restart nginx service
+      when: result is changed
+      ansible.builtin.service:
+        name: nginx
+        state: restarted

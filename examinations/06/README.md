@@ -167,6 +167,8 @@ There are several ways to accomplish this, and there is no _best_ way to do this
 
 Is this a good way to handle these types of conditionals? What do you think?
 
+Svar: Jag tycker det är ett bra sätt att hantera omstart av t.ex. nginx, eftersom man bara startar om när något faktiskt ändrats. Men det känns som att det finns ett mer robust sätt att göra detta på. Just nu så vet jag dock inte vilka de sätten är. 
+
 # BONUS QUESTION
 
 Imagine you had a playbook with hundreds of tasks to be done on several hosts, and each one of these tasks
@@ -177,3 +179,5 @@ would you like the flow to work?
 
 Describe in simple terms what your preferred task flow would look like, not necessarily implemented in
 Ansible, but in general terms.
+
+Svar: Jag tycker att man borde utföra alla konfigurationsändringar, filuppdateringar, installationer, osv. utan att starta om tjänsterna direkt. I stället kan man markera vilka tjänster som faktiskt behöver startas om, och sedan göra dessa omstarter i slutet om det behövs. På så sätt minskar man antalet omstarter och risken för onödiga driftstopp.
