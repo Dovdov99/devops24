@@ -1,0 +1,27 @@
+- name: Create users and add them to groups
+  hosts: web
+  become: true
+  tasks:
+
+    - name: Create several users
+      ansible.builtin.user:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - alovelace
+        - aturing
+        - edijkstra
+        - ghopper
+
+    - name: Add several users to groups. Set password and GECOS name
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        password: "$6$rounds=656000$mysecretsalt$.eNM1ZJfq/ia987d11Zo4PGvKRbL7zwWqsxKBpLGGtTmt8bqmWECBvMYHW8grUoSYqkuFLLQjyWzti3fUvMKy/"
+        state: present
+        groups: "{{ item.groups }}"
+        comment: "{{ item.realname }}"
+      loop:
+        - { name: alovelace, realname: Ada Lovelace, groups: [wheel, audio, video] }
+        - { name: aturing, realname: Alan Turing, groups: tape }
+        - { name: edijkstra, realname: Edsger Dijkstra, groups: tcpdump }
+        - { name: ghopper, realname: Grace Hoppers, groups: [wheel, audio] }
