@@ -47,7 +47,7 @@
     owner: root
     group: root
     mode: '0644'
-  register: result
+  notify: reload nginx
 
 - name: Ensure the /etc/pki/nginx directory exists
   ansible.builtin.file:
@@ -77,12 +77,6 @@
     path: /etc/pki/nginx/server.crt
     privatekey_path: /etc/pki/nginx/private/server.key
     provider: selfsigned
-
-- name: Restart nginx service
-  when: result is changed
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
 
 - name: Create several users
   ansible.builtin.user:
