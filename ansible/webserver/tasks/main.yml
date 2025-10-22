@@ -1,0 +1,108 @@
+---
+# tasks file for webserver
+- name: Ensure nginx is installed
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+
+- name: Ensure nginx is started at boot
+  ansible.builtin.service:
+    name: nginx
+    enabled: true
+    state: started
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /var/www/example.internal/html/
+    state: directory
+    mode: '0755'
+    setype: _default
+
+- name: Copy local file to /etc/nginx/conf.d/https.conf
+  ansible.builtin.copy:
+    src: files/https.conf
+    dest: /etc/nginx/conf.d/https.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Copy local file to /etc/nginx/conf.d/index.html
+  ansible.builtin.copy:
+    src: files/index.html
+    dest: /var/www/example.internal/html/index.html
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Show IP-adress
+  ansible.builtin.debug:
+    msg: "Serverns IP-adress är {{ ansible_default_ipv4.address }}"
+
+- name: Deploy Nginx configuration from template
+  ansible.builtin.template:
+    src: templates/example.internal.conf.j2
+    dest: /etc/nginx/conf.d/example.internal.conf
+    owner: root
+    group: root
+    mode: '0644'
+  register: result
+
+- name: Ensure the /etc/pki/nginx directory exists
+  ansible.builtin.file:
+    path: /etc/pki/nginx
+    state: directory
+    mode: "0755"
+    owner: root
+
+- name: Ensure we have a /etc/pkig/nginx/private directory
+  ansible.builtin.file:
+    path: /etc/pki/nginx/private
+    state: directory
+    mode: "0700"
+    owner: root
+
+- name: Ensure we have necessary software installed
+  ansible.builtin.package:
+    name: python3-cryptography
+    state: present
+
+- name: Ensure we have a private key for our certificate
+  community.crypto.openssl_privatekey:
+    path: /etc/pki/nginx/private/server.key
+
+- name: Create a self-signed certificate
+  community.crypto.x509_certificate:
+    path: /etc/pki/nginx/server.crt
+    privatekey_path: /etc/pki/nginx/private/server.key
+    provider: selfsigned
+
+- name: Restart nginx service
+  when: result is changed
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: Create several users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - alovelace
+    - aturing
+    - edijkstra
+    - ghopper
+
+- name: Add several users to groups. Set password and GECOS name
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    password: "$6$rounds=656000$mysecretsalt$.eNM1ZJfq/ia987d11Zo4PGvKRbL7zwWqsxKBpLGGtTmt8bqmWECBvMYHW8grUoSYqkuFLLQjyWzti3fUvMKy/"
+    state: present
+    groups: "{{ item.groups }}"
+    comment: "{{ item.realname }}"
+  loop:
+    - { name: alovelace, realname: Ada Lovelace, groups: [wheel, audio, video] }
+    - { name: aturing, realname: Alan Turing, groups: tape }
+    - { name: edijkstra, realname: Edsger Dijkstra, groups: tcpdump }
+    - { name: ghopper, realname: Grace Hoppers, groups: [wheel, audio] }
