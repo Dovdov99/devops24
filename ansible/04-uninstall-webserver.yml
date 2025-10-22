@@ -1,16 +1,16 @@
 ---
-- name: Install a webserver
+- name: Uninstall a webserver
   hosts: web
   become: true
   tasks:
 
-    - name: Ensure nginx is installed
-      ansible.builtin.package:
-        name: nginx
-        state: present
-
-    - name: Ensure nginx is started at boot
+    - name: Ensure nginx stopped
       ansible.builtin.service:
         name: nginx
-        state: started
-        enabled: true
+        state: stopped
+        enabled: false
+
+    - name: Ensure nginx is uninstalled
+      ansible.builtin.package:
+        name: nginx
+        state: abcent

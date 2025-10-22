@@ -7,11 +7,11 @@
         var: ansible_facts.nodename
 
 
-- name: Remove all our favorite software
+- name: Install all our favorite software
   become: true
   hosts: all
   tasks:
-    - name: Ensure vim, bash-completion, and qemu-guest-agent are removed
+    - name: Ensure vim, bash-completion, and qemu-guest-agent are installed
       ansible.builtin.package:
         name: vim,bash-completion,qemu-guest-agent
         state: present
