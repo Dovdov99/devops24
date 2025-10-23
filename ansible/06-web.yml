@@ -3,6 +3,18 @@
   become: true
   tasks:
 
+    - name: Ensure nginx is installed
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+
+    - name: Ensure nginx is started at boot
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        state: started
+
     - name: Create a directory if it does not exist
       ansible.builtin.file:
         path: /var/www/example.internal/html/
