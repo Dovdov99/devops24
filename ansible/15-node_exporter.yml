@@ -55,7 +55,7 @@
         dest: /etc/systemd/system/node_exporter.service
         owner: root
         group: root
-        mode: "0644"
+        mode: "0744"
 
     - name: Deploy node_exporter.socket to /etc/systemd/system
       ansible.builtin.template:
@@ -63,7 +63,7 @@
         dest: /etc/systemd/system/node_exporter.socket
         owner: root
         group: root
-        mode: "0644"
+        mode: "0744"
 
     - name: Open node_exporter port in firewalld
       ansible.posix.firewalld:
