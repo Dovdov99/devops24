@@ -46,7 +46,7 @@
         dest: /usr/sbin/node_exporter
         owner: root
         group: root
-        mode: "0754"
+        mode: "0755"
         remote_src: true
 
     - name: Copy node_exporter.service on the server to /etc/systemd/system
