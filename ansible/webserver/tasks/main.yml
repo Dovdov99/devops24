@@ -5,7 +5,6 @@
     name: nginx
     state: present
 
-
 - name: Ensure nginx is started at boot
   ansible.builtin.service:
     name: nginx
@@ -26,7 +25,6 @@
     owner: root
     group: root
     mode: '0644'
-
 
 - name: Copy local file to /etc/nginx/conf.d/index.html
   ansible.builtin.copy:

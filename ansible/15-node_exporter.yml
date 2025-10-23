@@ -1,0 +1,83 @@
+- name: Install node_exporter
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Create node_exporter user
+      ansible.builtin.user:
+        name: node_exporter
+        shell: /sbin/nologin
+        system: true
+        create_home: false
+
+    - name: Copy node_exporter tarz to servers
+      ansible.builtin.copy:
+        src: files/node_exporter-1.9.1.linux-amd64.tar.gz
+        dest: /home/deploy
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Unarchive directory on the server
+      ansible.builtin.unarchive:
+        src: /home/deploy/node_exporter-1.9.1.linux-amd64.tar.gz
+        dest: /home/deploy
+        remote_src: true
+
+    - name: Copy sysconfig.node_exporter to servers
+      ansible.builtin.copy:
+        src: files/sysconfig.node_exporter
+        dest: /etc/sysconfig/node_exporter
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Create directory /var/lib/node_exporter/textfile_collector
+      ansible.builtin.file:
+        path: /var/lib/node_exporter/textfile_collector
+        state: directory
+        owner: node_exporter
+        group: node_exporter
+        mode: "0755"
+
+    - name: Copy node_exporter binary on the server to /usr/sbin/node_exporter
+      ansible.builtin.copy:
+        src: /home/deploy/node_exporter-1.9.1.linux-amd64/node_exporter
+        dest: /usr/sbin/node_exporter
+        owner: root
+        group: root
+        mode: "0644"
+        remote_src: true
+
+    - name: Copy node_exporter.service on the server to /etc/systemd/system
+      ansible.builtin.copy:
+        src: files/node_exporter.service
+        dest: /etc/systemd/system/node_exporter.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Deploy node_exporter.socket to /etc/systemd/system
+      ansible.builtin.template:
+        src: files/node_exporter.socket.j2
+        dest: /etc/systemd/system/node_exporter.socket
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Open node_exporter port in firewalld
+      ansible.posix.firewalld:
+        port: 9100/tcp
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Ensure node_exporter service is enabled at boot
+      ansible.builtin.systemd:
+        name: node_exporter
+        enabled: true
+        state: started

@@ -5,7 +5,6 @@
     name: mariadb-server
     state: present
 
-
 - name: Ensure mariadb is started at boot
   ansible.builtin.service:
     name: mariadb
@@ -19,7 +18,6 @@
   ansible.builtin.debug:
     msg: "MariaDB is running"
   when: ansible_facts.services['mariadb.service'].state == "running"
-
 
 - name: Create a new database with name 'webappdb'
   community.mysql.mysql_db:
