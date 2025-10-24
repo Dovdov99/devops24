@@ -94,7 +94,7 @@
     groups: "{{ item.groups }}"
     comment: "{{ item.realname }}"
   loop:
-    - { name: alovelace, realname: Ada Lovelace, groups: [wheel, audio, video] }
-    - { name: aturing, realname: Alan Turing, groups: tape }
-    - { name: edijkstra, realname: Edsger Dijkstra, groups: tcpdump }
-    - { name: ghopper, realname: Grace Hoppers, groups: [wheel, audio] }
+    - {name: alovelace, realname: Ada Lovelace, groups: [wheel, audio, video]}
+    - {name: aturing, realname: Alan Turing, groups: tape}
+    - {name: edijkstra, realname: Edsger Dijkstra, groups: tcpdump}
+    - {name: ghopper, realname: Grace Hoppers, groups: [wheel, audio]}

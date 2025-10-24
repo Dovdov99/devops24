@@ -1,3 +1,4 @@
+---
 - name: Copy files
   hosts: web
   become: true

@@ -1,3 +1,4 @@
+---
 - name: Copy files to db
   hosts: db
   become: true
