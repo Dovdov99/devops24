@@ -13,4 +13,4 @@
     - name: Ensure nginx is uninstalled
       ansible.builtin.package:
         name: nginx
-        state: abcent
+        state: absent
