@@ -10,3 +10,6 @@
   become: true
   roles:
     - dbserver
+
+- name: Run CIS security compliance check
+  import_playbook: 16-comliance-check.yml

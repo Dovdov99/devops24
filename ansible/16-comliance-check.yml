@@ -1,0 +1,85 @@
+---
+- name: Security Compliance Checks
+  hosts: all
+  become: true
+  tasks:
+    - name: Gather the package facts
+      ansible.builtin.package_facts:
+
+    - name: Gather the service facts
+      ansible.builtin.service_facts:
+
+    - name: Assert that the OS is AlmaLinux 10
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution == 'AlmaLinux'
+          - ansible_distribution_version.startswith('10')
+        success_msg: "The OS is AlmaLinux 10."
+        fail_msg: "The OS is not AlmaLinux 10."
+
+    - name: Assert sshd is running
+      ansible.builtin.assert:
+        that: ansible_facts.services['sshd.service'].state == "running"
+        success_msg: "SSH is running."
+        fail_msg: "SSH is stopped or not available."
+
+    - name: Check that firewalld is installed
+      ansible.builtin.assert:
+        that: "'firewalld' in ansible_facts.packages"
+        success_msg: "Firewalld package is installed."
+        fail_msg: "Firewalld package is not installed."
+
+    - name: Assert that firewalld is running
+      ansible.builtin.assert:
+        that: "ansible_facts.services['firewalld.service'].state == 'running'"
+        success_msg: "Firewalld is running."
+        fail_msg: "Firewalld is not running or not available."
+
+    - name: Assert that sudo is installed
+      ansible.builtin.assert:
+        that: "'sudo' in ansible_facts.packages"
+        success_msg: "sudo package is installed."
+        fail_msg: "sudo package is not installed."
+
+
+    - name: Check that crond is installed
+      ansible.builtin.assert:
+        that: "'cronie' in ansible_facts.packages"
+        fail_msg: "Cron package is not installed."
+        success_msg: "Cron package is installed."
+
+    - name: Check that auditd is installed
+      ansible.builtin.assert:
+        that: "'audit' in ansible_facts.packages"
+        fail_msg: "auditd package is not installed."
+        success_msg: "auditd package is installed."
+
+
+    - name: Check that rlogin is not installed
+      ansible.builtin.assert:
+        that: "'rlogin' not in ansible_facts.packages"
+        fail_msg: "rlogin package is installed."
+        success_msg: "rlogin package is not installed."
+
+    - name: Check that netcat is not installed
+      ansible.builtin.assert:
+        that: "'nc' not in ansible_facts.packages"
+        fail_msg: "netcat package is installed."
+        success_msg: "netcat package is not installed."
+
+    - name: Check that iptables-services is not installed
+      ansible.builtin.assert:
+        that: "'iptables-services' not in ansible_facts.packages"
+        fail_msg: "iptables-services package is not installed."
+        success_msg: "iptables-services package is installed."
+
+    - name: Get all users from /etc/passwd
+      ansible.builtin.getent:
+        database: passwd
+      register: users
+
+    - name: Check if user 'deploy' exists
+      ansible.builtin.assert:
+        that: "'deploy' in ansible_facts.getent_passwd"
+        success_msg: "User 'deploy' exists on this system."
+        fail_msg: "User 'deploy' does not exist on this system."
