@@ -11,6 +11,19 @@
     enabled: true
     state: started
 
+- name: Install required packages
+  ansible.builtin.package:
+    name:
+      - firewalld
+      - python3-firewall
+    state: present
+
+- name: Ensure firewalld is started and enabled
+  ansible.builtin.service:
+    name: firewalld
+    enabled: true
+    state: started
+
 - name: Create a directory if it does not exist
   ansible.builtin.file:
     path: /var/www/example.internal/html/
